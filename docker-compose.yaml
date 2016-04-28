@@ -1,0 +1,52 @@
+version: '2'
+#Version 2 files are supported by Compose 1.6.0+ and require a Docker Engine of version 1.10.0+.
+
+services:
+
+  rabbitmq:
+    image: rabbitmq:latest
+    container_name: rabbitmq
+    env_file: rabbitmq.env
+    ports:
+     - 5672:5672
+    logging:
+      driver: "json-file"
+    networks:
+      - back
+
+  mongo:
+    image: mongo:latest
+    container_name: mongodb
+    ports:
+     - 27017:27017
+    volumes:
+     - /data/mongo:/data/mongo
+    logging:
+      driver: "json-file"
+    networks:
+     - back
+
+  st2:
+    build: ./st2
+    container_name: st2
+    command: bash -c 'while true; do date; sleep 300; done'
+    ports:
+     - 9101:9101
+    volumes:
+     - ./st2/etc/st2:/etc/st2
+    networks:
+     - front
+     - back
+
+#  shell-image:
+#    image: ubuntu:14.04
+#    command: bash -c 'while true; do date; sleep 300; done'
+#    networks:
+#     - front
+#     - back
+  
+networks:
+  front:
+    driver: bridge
+  back:
+    driver: bridge
