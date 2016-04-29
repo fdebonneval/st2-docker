@@ -29,7 +29,7 @@ services:
   st2:
     build: ./st2
     container_name: st2
-    command: bash -c 'while true; do date; sleep 300; done'
+    command: bash -c '/usr/bin/st2ctl start'
     ports:
      - 9101:9101
     volumes:
